@@ -12,52 +12,58 @@ class Solution {
             in.nextLine();
         }
 
-        String palavra = in.nextLine();
-        char[] letras = palavra.toCharArray();
+        String word = in.nextLine().toUpperCase();
+        char[] letters = word.toCharArray();
+        
 
-        int[] posicoes = calcularPosicaoAlfabeto(letras);
+        int[] positions = alphabetPositions(letters);
 
         for (int i = 0; i < height; i++) {
-            String linha = in.nextLine();
+            String line = in.nextLine();
 
-            for (int j = 0; j < posicoes.length; j++) {
-                int[] inicioFim = calcularInicioFimPosicaoDiagrama(posicoes[j], width);
-                System.out.print(linha.substring(inicioFim[0], inicioFim[1]));
+            for (int j = 0; j < positions.length; j++) {
+                LetterPosition letterPosition = diagramPosition(positions[j], width);
+                System.out.print(line.substring(letterPosition.init, letterPosition.end));
             }
             System.out.println();
         }
         in.close();
     }
 
-    public static int[] calcularPosicaoAlfabeto(char[] caracteres) {
-        int[] posicoesNoAlfabeto = new int[caracteres.length];
-        int inicioPosicaoNoDiagrama = 0;
+    public static int[] alphabetPositions(char[] characters) {
+        int[] alphabetPositions = new int[characters.length];
+        
+        int startDiagramPosition = 0;
 
-        for (int i = 0; i < caracteres.length; i++) {
-            int charConvertido = (int) caracteres[i];
+        for (int i = 0; i < characters.length; i++) {
+            int convertedCharacter = (int) characters[i];
 
-            if (charConvertido >= 65 && charConvertido <= 90) {
-                inicioPosicaoNoDiagrama = charConvertido - 65;
-            } else if (charConvertido >= 97 && charConvertido <= 122) {
-                inicioPosicaoNoDiagrama = charConvertido - 97;
+            if (convertedCharacter >= 65 && convertedCharacter <= 90) {
+                startDiagramPosition = convertedCharacter - 65;
             } else {
-                inicioPosicaoNoDiagrama = 26;
+                startDiagramPosition = 26;
             }
-            posicoesNoAlfabeto[i] = inicioPosicaoNoDiagrama;
+            alphabetPositions[i] =  startDiagramPosition;
         }
-        return posicoesNoAlfabeto;
+        return alphabetPositions;
     }
 
-    public static int[] calcularInicioFimPosicaoDiagrama(int posicaoAlfabeto, int width) {
-        int[] saida = new int[2];
-        if (posicaoAlfabeto == 0) {
-            saida[0] = 0;
-            saida[1] = width;
+    public static LetterPosition diagramPosition(int alphabetPosition, int width) {
+        LetterPosition out = new LetterPosition();
+        
+        if (alphabetPosition == 0) {
+            out.init = 0;
+            out.end = width;
         } else {
-            saida[0] = posicaoAlfabeto * width;
-            saida[1] = width + posicaoAlfabeto * width;
+            out.init = alphabetPosition * width;
+            out.end = width + alphabetPosition * width;
         }
-        return saida;
+        return out;
     }
 
+}
+
+class LetterPosition {
+    int init;
+    int end;
 }
